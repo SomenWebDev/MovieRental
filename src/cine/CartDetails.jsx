@@ -5,18 +5,16 @@ import Checkout from "../assets/icons/checkout.svg";
 import { getImgUrl } from "../utils/cine-utility";
 
 export default function CartDetails({ onClose }) {
-  const { cartData, setCartData } = useContext(MovieContext);
-  console.log(cartData);
+  const { state, dispatch } = useContext(MovieContext);
+  console.log(state.cartData);
 
-  function handleDeleteCart(event, itemId) {
+  function handleDeleteCart(event, item) {
     event.preventDefault();
-    const filteredItem = cartData.filter((item) => {
-      return item.id !== itemId;
+
+    dispatch({
+      type: "REMOVE_FROM_CART",
+      payload: item,
     });
-
-    // ...filterdItem used for creating new reference.
-
-    setCartData([...filteredItem]);
   }
   return (
     <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/60 backdrop-blur-sm">
@@ -27,10 +25,10 @@ export default function CartDetails({ onClose }) {
           </h2>
 
           <div className="space-y-8 lg:space-y-12 max-h-[450px] overflow-auto mb-10 lg:mb-14">
-            {cartData.length === 0 ? (
+            {state.cartData.length === 0 ? (
               <p className="text-center text-[#575A6E]">Your cart is empty</p>
             ) : (
-              cartData.map((item) => (
+              state.cartData.map((item) => (
                 <div key={item.id} className="grid grid-cols-[1fr_auto] gap-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -52,7 +50,7 @@ export default function CartDetails({ onClose }) {
                   </div>
                   <div className="flex justify-between gap-4 items-center">
                     <button
-                      onClick={(e) => handleDeleteCart(e, item.id)}
+                      onClick={(e) => handleDeleteCart(e, item)}
                       className="bg-[#D42967] rounded-md p-2 md:px-4 inline-flex items-center space-x-2 text-white"
                     >
                       <img className="w-5 h-5" src={Delete} alt="" />
